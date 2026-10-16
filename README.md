@@ -6,9 +6,11 @@
 产出页面自带：流程视图 / 架构视图 / 时序视图、节点点击、阶段子流程、边状态动画、事件日志、拖拽、滚轮缩放、双指缩放钩子、自适应视图。
 
 <p align="center">
-  <img src="docs/capability-map.png" alt="Flowchat 功能地图与设计取舍" width="100%">
+  <img src="docs/capability-map.png" alt="Flowchat 能力地图" width="100%">
   <br>
-  <sub>功能地图与设计取舍（<code>tools/render_capability_map.py</code> 可重生成）</sub>
+  <sub>能力地图：49 节点类型 / 19 边类型 / 13 状态 / 12 形状 / 4 尺寸 / 12 端口位置</sub>
+  <br>
+  <a href="docs/enum-spectrum.html"><b>→ 下载后用浏览器打开 docs/enum-spectrum.html 查看完整枚举参考与真实渲染效果</b></a>
 </p>
 
 ```bash
