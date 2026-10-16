@@ -5,6 +5,12 @@
 
 产出页面自带：流程视图 / 架构视图 / 时序视图、节点点击、阶段子流程、边状态动画、事件日志、拖拽、滚轮缩放、双指缩放钩子、自适应视图。
 
+<p align="center">
+  <img src="docs/capability-map.png" alt="Flowchat 功能地图与设计取舍" width="100%">
+  <br>
+  <sub>功能地图与设计取舍（<code>tools/render_capability_map.py</code> 可重生成）</sub>
+</p>
+
 ```bash
 python3 scripts/generate_flowchat.py \
   --graph examples/minimal.graph.json \
@@ -134,6 +140,8 @@ harness/flowchat_local_harness.py  # 静态几何 + 交互钩子门禁
 references/theme.md             # 主题令牌
 examples/minimal.graph.json     # 可直接跑通的最小示例
 examples/theme.example.json     # 主题覆盖示例
+tools/render_capability_map.py  # 重生成 docs/capability-map.{svg,png}
+docs/capability-map.png         # README 功能地图图片
 ```
 
 ## License
