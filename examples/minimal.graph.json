@@ -1,0 +1,197 @@
+{
+  "viewBox": [
+    0,
+    0,
+    1600,
+    760
+  ],
+  "nodes": [
+    {
+      "id": "intake",
+      "label": "需求接入",
+      "kind": "stage",
+      "status": "completed",
+      "x": 60,
+      "y": 300,
+      "width": 180,
+      "height": 90,
+      "order": 1
+    },
+    {
+      "id": "design",
+      "label": "方案设计",
+      "kind": "stage",
+      "status": "active",
+      "x": 380,
+      "y": 300,
+      "width": 180,
+      "height": 90,
+      "order": 2
+    },
+    {
+      "id": "build",
+      "label": "开发实现",
+      "kind": "stage",
+      "status": "pending",
+      "x": 700,
+      "y": 300,
+      "width": 180,
+      "height": 90,
+      "order": 3
+    },
+    {
+      "id": "review",
+      "label": "验收评审",
+      "kind": "gate",
+      "status": "pending",
+      "x": 1020,
+      "y": 300,
+      "width": 180,
+      "height": 90,
+      "order": 4
+    },
+    {
+      "id": "ship",
+      "label": "发布交付",
+      "kind": "stage",
+      "status": "pending",
+      "x": 1340,
+      "y": 300,
+      "width": 180,
+      "height": 90,
+      "order": 5
+    },
+    {
+      "id": "rework",
+      "label": "返工：评审未通过",
+      "kind": "issue",
+      "status": "blocked",
+      "x": 1020,
+      "y": 540,
+      "width": 180,
+      "height": 90
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-intake-design",
+      "source": "intake",
+      "target": "design",
+      "status": "completed",
+      "source_port": "right-2",
+      "target_port": "left-2"
+    },
+    {
+      "id": "e-design-build",
+      "source": "design",
+      "target": "build",
+      "status": "active",
+      "source_port": "right-2",
+      "target_port": "left-2"
+    },
+    {
+      "id": "e-build-review",
+      "source": "build",
+      "target": "review",
+      "status": "pending",
+      "source_port": "right-2",
+      "target_port": "left-2"
+    },
+    {
+      "id": "e-review-ship",
+      "source": "review",
+      "target": "ship",
+      "status": "pending",
+      "label": "通过",
+      "source_port": "right-2",
+      "target_port": "left-2"
+    },
+    {
+      "id": "e-review-rework",
+      "source": "review",
+      "target": "rework",
+      "status": "return",
+      "label": "未通过",
+      "source_port": "bottom-2",
+      "target_port": "top-2"
+    },
+    {
+      "id": "e-rework-build",
+      "source": "rework",
+      "target": "build",
+      "status": "return",
+      "label": "返工回流",
+      "routing": "auto",
+      "crossing": true,
+      "source_port": "left-2",
+      "target_port": "bottom-2"
+    }
+  ],
+  "subflows": {
+    "design": {
+      "title": "方案设计子流程",
+      "entry": "草稿",
+      "next": "开发实现",
+      "loop": "评审退回则回到草稿",
+      "nodes": [
+        {
+          "id": "d1",
+          "label": "草稿",
+          "kind": "agent",
+          "status": "completed",
+          "x": 120,
+          "y": 120,
+          "width": 180,
+          "height": 80
+        },
+        {
+          "id": "d2",
+          "label": "内部评审",
+          "kind": "gate",
+          "status": "active",
+          "x": 440,
+          "y": 120,
+          "width": 180,
+          "height": 80
+        },
+        {
+          "id": "d3",
+          "label": "定稿",
+          "kind": "summary",
+          "status": "pending",
+          "x": 760,
+          "y": 120,
+          "width": 180,
+          "height": 80
+        }
+      ],
+      "edges": [
+        {
+          "id": "s1",
+          "source": "d1",
+          "target": "d2",
+          "status": "active",
+          "source_port": "right-2",
+          "target_port": "left-2"
+        },
+        {
+          "id": "s2",
+          "source": "d2",
+          "target": "d3",
+          "status": "pending",
+          "source_port": "right-2",
+          "target_port": "left-2"
+        },
+        {
+          "id": "s3",
+          "source": "d2",
+          "target": "d1",
+          "status": "return",
+          "routing": "auto",
+          "source_port": "bottom-2",
+          "target_port": "bottom-1"
+        }
+      ]
+    }
+  }
+}
