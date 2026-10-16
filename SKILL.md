@@ -15,7 +15,7 @@ description: "Flowchat · 流程图生成器：从 graph JSON 生成单文件、
 
 **不要**用它产出图片、Mermaid 片段或嵌入式组件——这里的交付物是独立的 HTML 文件。
 
-代码快照：`c46b22b`（https://github.com/vinterye/flowchat-skill/commit/c46b22b3a85e0428b2f9846b4dcb938ec46c523b）。枚举一律以该快照里的 `data/type-registry-v1.json` 为准。
+代码快照：`e74c2c1`（https://github.com/vinterye/flowchat-skill/commit/e74c2c186b011d8dc8e2369a8c8985f0aa0bc82e）。枚举一律以该快照里的 `data/type-registry-v1.json` 为准。
 
 ## 铁律（按此顺序执行）
 
