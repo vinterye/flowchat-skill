@@ -41,7 +41,7 @@ python3 scripts/generate_flowchat.py \
 python3 harness/flowchat_local_harness.py path/to/flowchat.html --output out/harness-report.json
 ```
 
-`--graph` 省略则渲染内置 22 节点示例图；`--theme` 省略则用内置浅色主题。
+`--theme` 可省略（用内置浅色主题）。**`--graph` 必填**——内置 22 节点示例图当前无法通过自身几何门禁（见"已知边界"），请以 `examples/minimal.graph.json` 为起点。
 
 判读第 3 步：看 `static_status` 字段，**不要看退出码**。没有浏览器回执时 `status` 恒为 `blocked`、退出码恒为 2，这是证据门禁的设计，不是几何失败。
 
@@ -115,6 +115,7 @@ python3 scripts/validate_v2_topology.py out/flowchat-v2.html --output out/v2-rep
 
 ## 已知边界
 
+- **不要省略 `--graph`。** 内置 22 节点示例图的 `dispatch-research` 边会触发 `route segment 0 must be axis aligned`：扇出走廊起点用了车道坐标、走廊点却取主干坐标，产生斜段，渲染器按设计拒绝。这是既有缺陷，不要改几何内核绕过——显式提供 `--graph`。
 - **菱形节点（`gate` / `decision`）配编号车道端口**会触发 `source_not_on_boundary`：渲染器把车道投影到矩形边界，harness 要求端点落在菱形边上。改用非菱形类型（`human_review` / `review`）或显式 `route_points`。这是既有不一致，不要改几何内核来绕过。
 - 生成的 HTML **不要手工改**。改图或改主题重新生成。
 

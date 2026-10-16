@@ -30,7 +30,7 @@ python3 scripts/generate_flowchat.py \
 python3 harness/flowchat_local_harness.py out/flowchat.html --output out/harness-report.json
 ```
 
-打开 `out/flowchat.html` 就是结果。`--graph` 和 `--theme` 都可省略：省略 `--graph` 渲染内置的 22 节点示例图，省略 `--theme` 用内置浅色主题。
+打开 `out/flowchat.html` 就是结果。`--theme` 可省略（用内置浅色主题）。**`--graph` 必填**——内置的 22 节点示例图当前无法通过自身的几何门禁（见"已知边界"），请以 [examples/minimal.graph.json](examples/minimal.graph.json) 为起点改你自己的图。
 
 ## 安装
 
@@ -131,6 +131,7 @@ python3 -c "import json;print(json.load(open('out/harness-report.json'))['static
 
 ## 已知边界
 
+- **内置 22 节点示例图（省略 `--graph`）当前渲染失败**：`dispatch-research` 边的扇出走廊起点用了车道坐标 (543.3,410)、而走廊点取主干 x=580，产生斜段，渲染器按设计拒绝。命令会打印 `edge 'dispatch-research': route segment 0 must be axis aligned` 并返回 2。这是渲染器 fanout trunk 逻辑的既有缺陷，本次未改几何内核；请显式提供 `--graph`。
 - **菱形节点（`gate` / `decision`）配编号车道端口**会被 harness 判 `source_not_on_boundary`：渲染器把车道投影到矩形边界，而 harness 要求端点落在菱形边上。规避方式是用非菱形类型（`human_review` / `review`），或给这类边显式 `route_points`。这是渲染器与门禁之间的既有不一致，未在本次改动中修改几何内核。
 - `data/p1-p2-test-graph.json` 的 `subflows.development` 是空壳（`nodes` 为空、key 不是声明的节点），校验器会如实报错。它是测试夹具，不是示例。
 

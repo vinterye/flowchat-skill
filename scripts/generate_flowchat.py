@@ -9,6 +9,7 @@ import html
 import json
 import math
 import re
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -1749,7 +1750,12 @@ def render_html(graph: dict[str, Any], theme: dict[str, str], title: str) -> str
     edge_endpoint_parts: list[str] = []
     occupied_segments: list[tuple[list[float], list[float]]] = []
     for edge in edges:
-        markup = _edge_svg(edge, by_id, theme, occupied_segments, special_routes.get(str(edge.get("id"))))
+        try:
+            markup = _edge_svg(edge, by_id, theme, occupied_segments, special_routes.get(str(edge.get("id"))))
+        except ValueError as exc:
+            # Surface which edge broke instead of a bare traceback: the caller
+            # needs to know what to move, not which line raised.
+            raise ValueError(f"edge `{edge.get('id', '?')}`: {exc}") from exc
         edge_markup_parts.append(markup)
         # Endpoint editing is intentionally not mounted by default. Keep the
         # renderer and legacy markup available for an explicit host opt-in.
@@ -1794,7 +1800,7 @@ def render_html(graph: dict[str, Any], theme: dict[str, str], title: str) -> str
 <script>window.__FLOWCHAT_GRAPH__={graph_json};window.__FLOWCHAT_THEME__={theme_json};window.__FLOWCHAT_REGISTRY__={registry_json};window.__FLOWCHAT_VIEWBOX__={json.dumps(view_box)};</script>
 <script>{_interaction_script()}</script></body></html>'''
 
-def main() -> None:
+def main() -> int:
     parser = argparse.ArgumentParser(description="Generate a standalone Flowchat HTML page")
     parser.add_argument("--graph", type=Path)
     parser.add_argument("--theme", type=Path)
@@ -1805,9 +1811,22 @@ def main() -> None:
     theme = dict(DEFAULT_THEME)
     theme.update(_load(args.theme, {}))
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(render_html(graph, theme, args.title), encoding="utf-8")
+    try:
+        args.output.write_text(render_html(graph, theme, args.title), encoding="utf-8")
+    except ValueError as exc:
+        # The renderer refuses invalid geometry instead of emitting a
+        # misleading route. Say so in plain words and exit non-zero: the
+        # scriptable callers need to distinguish "page written" from "refused".
+        print("FAIL: geometry could not be satisfied, so no page was written.", file=sys.stderr)
+        print(f"  reason ({exc})", file=sys.stderr)
+        print("  How to fix: 1) pull the two nodes further apart 2) switch the edge to "
+              "routing: \"auto\" or remove explicit route_points 3) check that the declared "
+              "ports match the relative position of the nodes (horizontal gap dominant -> "
+              "left/right, vertical -> top/bottom).", file=sys.stderr)
+        return 2
     print(args.output)
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
