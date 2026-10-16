@@ -1,0 +1,26 @@
+{
+  "canvas": "linear-gradient(135deg,#ffffff,#f3f6fb)",
+  "panel": "rgba(255,255,255,.92)",
+  "text": "#0f172a",
+  "muted": "#475569",
+  "accent": "#0f4cc9",
+  "edge": "#334155",
+  "type_colors": {
+    "start": "#dcfce7",
+    "fork": "#ffedd5",
+    "join": "#ffedd5",
+    "agent": "#dbeafe",
+    "human_review": "#fef3c7",
+    "artifact": "#dcfce7",
+    "reference": "#ede9fe"
+  },
+  "type_strokes": {
+    "start": "#166534",
+    "fork": "#9a3412",
+    "join": "#9a3412",
+    "agent": "#1d4ed8",
+    "human_review": "#92400e",
+    "artifact": "#166534",
+    "reference": "#6d28d9"
+  }
+}

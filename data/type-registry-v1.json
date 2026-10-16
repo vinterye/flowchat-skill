@@ -1,0 +1,539 @@
+{
+  "schema": "flowchat-type-registry/v1",
+  "nodeTypes": {
+    "start": {
+      "family": "flow_control",
+      "shape": "capsule",
+      "icon": "play",
+      "fill": "#ecfdf5",
+      "stroke": "#059669"
+    },
+    "end": {
+      "family": "flow_control",
+      "shape": "capsule",
+      "icon": "stop",
+      "fill": "#f1f5f9",
+      "stroke": "#475569"
+    },
+    "process": {
+      "family": "execution",
+      "shape": "roundRect",
+      "icon": "process",
+      "fill": "#eff6ff",
+      "stroke": "#2563eb"
+    },
+    "decision": {
+      "family": "flow_control",
+      "shape": "diamond",
+      "icon": "decision",
+      "fill": "#fffbeb",
+      "stroke": "#d97706"
+    },
+    "rule": {
+      "family": "governance",
+      "shape": "hexagon",
+      "icon": "rule",
+      "fill": "#f5f3ff",
+      "stroke": "#7c3aed"
+    },
+    "gate": {
+      "family": "flow_control",
+      "shape": "diamond",
+      "icon": "gate",
+      "fill": "#fff7ed",
+      "stroke": "#d97706",
+      "fill_token": "review_fill"
+    },
+    "manual": {
+      "family": "execution",
+      "shape": "trapezoid",
+      "icon": "hand",
+      "fill": "#fafaf9",
+      "stroke": "#78716c"
+    },
+    "agent": {
+      "family": "execution",
+      "shape": "roundRect",
+      "icon": "agent",
+      "fill": "#eff6ff",
+      "stroke": "#2563eb",
+      "fill_token": "agent_fill"
+    },
+    "controller": {
+      "family": "execution",
+      "shape": "roundRect",
+      "icon": "controller",
+      "fill": "#eef2ff",
+      "stroke": "#4f46e5"
+    },
+    "orchestrator": {
+      "family": "execution",
+      "shape": "roundRect",
+      "icon": "controller",
+      "fill": "#eef2ff",
+      "stroke": "#4f46e5"
+    },
+    "expert": {
+      "family": "execution",
+      "shape": "roundRect",
+      "icon": "expert",
+      "fill": "#faf5ff",
+      "stroke": "#9333ea"
+    },
+    "skill": {
+      "family": "execution",
+      "shape": "roundRect",
+      "icon": "skill",
+      "fill": "#ecfeff",
+      "stroke": "#0891b2"
+    },
+    "harness": {
+      "family": "execution",
+      "shape": "roundRect",
+      "icon": "harness",
+      "fill": "#ecfdf5",
+      "stroke": "#0f766e"
+    },
+    "tool": {
+      "family": "execution",
+      "shape": "roundRect",
+      "icon": "tool",
+      "fill": "#f1f5f9",
+      "stroke": "#475569"
+    },
+    "runtime": {
+      "family": "execution",
+      "shape": "roundRect",
+      "icon": "runtime",
+      "fill": "#f1f5f9",
+      "stroke": "#334155"
+    },
+    "api": {
+      "family": "execution",
+      "shape": "roundRect",
+      "icon": "api",
+      "fill": "#eff6ff",
+      "stroke": "#64748b"
+    },
+    "database": {
+      "family": "data_artifact",
+      "shape": "cylinder",
+      "icon": "database",
+      "fill": "#eef2ff",
+      "stroke": "#4338ca"
+    },
+    "document": {
+      "family": "data_artifact",
+      "shape": "document",
+      "icon": "document",
+      "fill": "#eff6ff",
+      "stroke": "#2563eb"
+    },
+    "artifact": {
+      "family": "data_artifact",
+      "shape": "document",
+      "icon": "artifact",
+      "fill": "#ecfdf5",
+      "stroke": "#059669"
+    },
+    "review": {
+      "family": "governance",
+      "shape": "roundRect",
+      "icon": "review",
+      "fill": "#fff7ed",
+      "stroke": "#b45309",
+      "fill_token": "review_fill"
+    },
+    "review-center": {
+      "family": "governance",
+      "shape": "roundRect",
+      "icon": "review",
+      "fill": "#fff7ed",
+      "stroke": "#b45309",
+      "fill_token": "review_fill"
+    },
+    "input": {
+      "family": "data_artifact",
+      "shape": "parallelogram",
+      "icon": "input",
+      "fill": "#f1f5f9",
+      "stroke": "#64748b"
+    },
+    "output": {
+      "family": "data_artifact",
+      "shape": "parallelogram",
+      "icon": "output",
+      "fill": "#ecfdf5",
+      "stroke": "#059669"
+    },
+    "event": {
+      "family": "data_artifact",
+      "shape": "circle",
+      "icon": "event",
+      "fill": "#ecfeff",
+      "stroke": "#0891b2"
+    },
+    "error": {
+      "family": "flow_control",
+      "shape": "octagon",
+      "icon": "error",
+      "fill": "#fff1f2",
+      "stroke": "#dc2626"
+    },
+    "wait": {
+      "family": "flow_control",
+      "shape": "roundRect",
+      "icon": "wait",
+      "fill": "#f8fafc",
+      "stroke": "#64748b"
+    },
+    "subflow": {
+      "family": "structure",
+      "shape": "doubleRect",
+      "icon": "subflow",
+      "fill": "#eef2ff",
+      "stroke": "#6366f1"
+    },
+    "reference": {
+      "family": "structure",
+      "shape": "doubleRect",
+      "icon": "reference",
+      "fill": "#f5f3ff",
+      "stroke": "#7c3aed"
+    },
+    "external": {
+      "family": "structure",
+      "shape": "roundRect",
+      "icon": "external",
+      "fill": "#f8fafc",
+      "stroke": "#94a3b8"
+    },
+    "stage": {
+      "family": "structure",
+      "shape": "roundRect",
+      "icon": "stage",
+      "fill": "#ffffff",
+      "stroke": "#64748b"
+    },
+    "control": {
+      "family": "execution",
+      "shape": "roundRect",
+      "icon": "control",
+      "fill": "#eef7ff",
+      "stroke": "#4a68e8",
+      "fill_token": "square_fill"
+    },
+    "dispatch": {
+      "family": "execution",
+      "shape": "roundRect",
+      "icon": "dispatch",
+      "fill": "#f5f3ff",
+      "stroke": "#7657d9",
+      "fill_token": "dispatch_fill"
+    },
+    "summary": {
+      "family": "governance",
+      "shape": "roundRect",
+      "icon": "summary",
+      "fill": "#eef7ff",
+      "stroke": "#4a68e8"
+    },
+    "issue": {
+      "family": "flow_control",
+      "shape": "roundRect",
+      "icon": "issue",
+      "fill": "#fff5f5",
+      "stroke": "#d75a67",
+      "fill_token": "blocked_fill"
+    },
+    "feedback": {
+      "family": "data_artifact",
+      "shape": "roundRect",
+      "icon": "feedback",
+      "fill": "#f2fbf6",
+      "stroke": "#3ea77a",
+      "fill_token": "feedback_fill"
+    },
+    "fork": {
+      "family": "flow_control",
+      "shape": "bar",
+      "icon": "fork",
+      "fill": "#fff7ed",
+      "stroke": "#d97706",
+      "size": "compact"
+    },
+    "join": {
+      "family": "flow_control",
+      "shape": "bar",
+      "icon": "join",
+      "fill": "#fff7ed",
+      "stroke": "#d97706",
+      "size": "compact"
+    },
+    "merge": {
+      "family": "flow_control",
+      "shape": "diamond",
+      "icon": "merge",
+      "fill": "#fffbeb",
+      "stroke": "#d97706",
+      "size": "compact"
+    },
+    "retry": {
+      "family": "flow_control",
+      "shape": "roundRect",
+      "icon": "retry",
+      "fill": "#fff7ed",
+      "stroke": "#c2410c",
+      "size": "compact"
+    },
+    "loop": {
+      "family": "flow_control",
+      "shape": "roundRect",
+      "icon": "loop",
+      "fill": "#fff7ed",
+      "stroke": "#c2410c",
+      "size": "compact"
+    },
+    "timer": {
+      "family": "flow_control",
+      "shape": "circle",
+      "icon": "timer",
+      "fill": "#f8fafc",
+      "stroke": "#64748b",
+      "size": "compact"
+    },
+    "queue": {
+      "family": "data_artifact",
+      "shape": "cylinder",
+      "icon": "queue",
+      "fill": "#eef2ff",
+      "stroke": "#4338ca",
+      "size": "regular"
+    },
+    "message": {
+      "family": "data_artifact",
+      "shape": "parallelogram",
+      "icon": "message",
+      "fill": "#ecfeff",
+      "stroke": "#0891b2",
+      "size": "regular"
+    },
+    "webhook": {
+      "family": "execution",
+      "shape": "roundRect",
+      "icon": "webhook",
+      "fill": "#eff6ff",
+      "stroke": "#2563eb",
+      "size": "regular"
+    },
+    "checkpoint": {
+      "family": "governance",
+      "shape": "hexagon",
+      "icon": "checkpoint",
+      "fill": "#f5f3ff",
+      "stroke": "#7c3aed",
+      "size": "compact"
+    },
+    "milestone": {
+      "family": "governance",
+      "shape": "hexagon",
+      "icon": "milestone",
+      "fill": "#f5f3ff",
+      "stroke": "#7c3aed",
+      "size": "regular"
+    },
+    "parallel_group": {
+      "family": "structure",
+      "shape": "doubleRect",
+      "icon": "parallel",
+      "fill": "#eef2ff",
+      "stroke": "#6366f1",
+      "size": "wide"
+    },
+    "human_review": {
+      "family": "governance",
+      "shape": "roundRect",
+      "icon": "human",
+      "fill": "#fff7ed",
+      "stroke": "#b45309",
+      "size": "wide"
+    },
+    "fallback": {
+      "family": "flow_control",
+      "shape": "octagon",
+      "icon": "fallback",
+      "fill": "#fff1f2",
+      "stroke": "#dc2626",
+      "size": "regular"
+    }
+  },
+  "edgeTypes": {
+    "main": {
+      "family": "flow",
+      "marker": "pending"
+    },
+    "flow": {
+      "family": "flow",
+      "marker": "pending"
+    },
+    "data": {
+      "family": "data",
+      "marker": "pending"
+    },
+    "control": {
+      "family": "control",
+      "marker": "active"
+    },
+    "agent": {
+      "family": "flow",
+      "marker": "active"
+    },
+    "review": {
+      "family": "governance",
+      "marker": "review"
+    },
+    "feedback": {
+      "family": "feedback",
+      "marker": "feedback"
+    },
+    "return": {
+      "family": "feedback",
+      "marker": "return"
+    },
+    "callback": {
+      "family": "callback",
+      "marker": "feedback"
+    },
+    "exception": {
+      "family": "exception",
+      "marker": "blocked"
+    },
+    "expected": {
+      "family": "expected",
+      "marker": "pending"
+    },
+    "candidate": {
+      "family": "candidate",
+      "marker": "pending"
+    },
+    "retry": {
+      "family": "control",
+      "marker": "blocked"
+    },
+    "loop": {
+      "family": "feedback",
+      "marker": "return"
+    },
+    "parallel": {
+      "family": "parallel",
+      "marker": "active"
+    },
+    "handoff": {
+      "family": "handoff",
+      "marker": "active"
+    },
+    "event": {
+      "family": "event",
+      "marker": "feedback"
+    },
+    "message": {
+      "family": "message",
+      "marker": "pending"
+    },
+    "human_review": {
+      "family": "governance",
+      "marker": "review"
+    }
+  },
+  "statuses": {
+    "completed": {
+      "visual": "completed",
+      "badge": "check"
+    },
+    "active": {
+      "visual": "active",
+      "badge": "running"
+    },
+    "running": {
+      "visual": "active",
+      "badge": "running"
+    },
+    "pending": {
+      "visual": "pending",
+      "badge": "pending"
+    },
+    "blocked": {
+      "visual": "blocked",
+      "badge": "blocked"
+    },
+    "return": {
+      "visual": "return",
+      "badge": "return"
+    },
+    "review": {
+      "visual": "review",
+      "badge": "review"
+    },
+    "candidate": {
+      "visual": "candidate",
+      "badge": "candidate"
+    },
+    "unknown": {
+      "visual": "unknown",
+      "badge": "unknown"
+    },
+    "not_run": {
+      "visual": "not-run",
+      "badge": "not-run"
+    },
+    "not_implemented": {
+      "visual": "not-implemented",
+      "badge": "unknown"
+    },
+    "placeholder": {
+      "visual": "unknown",
+      "badge": "unknown"
+    },
+    "needs_review": {
+      "visual": "needs-review",
+      "badge": "review"
+    }
+  },
+  "sizePresets": {
+    "compact": {
+      "width": 132,
+      "height": 56
+    },
+    "regular": {
+      "width": 156,
+      "height": 88
+    },
+    "wide": {
+      "width": 220,
+      "height": 88
+    },
+    "tall": {
+      "width": 180,
+      "height": 120
+    }
+  },
+  "visualRegression": {
+    "statuses": [
+      "completed",
+      "active",
+      "pending",
+      "blocked",
+      "unknown",
+      "not_run",
+      "candidate"
+    ],
+    "families": [
+      "flow_control",
+      "execution",
+      "data_artifact",
+      "governance",
+      "structure"
+    ],
+    "rule": "type fill and shape remain stable; status changes border, badge, opacity, or dash only"
+  }
+}

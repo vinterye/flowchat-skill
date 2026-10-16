@@ -1,0 +1,318 @@
+{
+  "title": "Flowchat P1 / P2 控制节点与类型矩阵",
+  "viewBox": [
+    0,
+    0,
+    1750,
+    560
+  ],
+  "nodes": [
+    {
+      "id": "start",
+      "type": "start",
+      "label": "开始\nExecution Run",
+      "x": 40,
+      "y": 228,
+      "status": "completed",
+      "source_side": "right"
+    },
+    {
+      "id": "fork",
+      "type": "fork",
+      "label": "Fork\n并行分发",
+      "x": 300,
+      "y": 228,
+      "status": "active",
+      "size": "compact",
+      "source_side": "right",
+      "children": [
+        "agent-a",
+        "agent-b",
+        "agent-c"
+      ]
+    },
+    {
+      "id": "agent-a",
+      "type": "agent",
+      "label": "Agent A\n分析",
+      "x": 600,
+      "y": 80,
+      "status": "active",
+      "target_side": "left",
+      "group_id": "parallel-1"
+    },
+    {
+      "id": "agent-b",
+      "type": "agent",
+      "label": "Agent B\n执行",
+      "x": 600,
+      "y": 228,
+      "status": "pending",
+      "target_side": "left",
+      "group_id": "parallel-1"
+    },
+    {
+      "id": "agent-c",
+      "type": "agent",
+      "label": "Agent C\n校验",
+      "x": 600,
+      "y": 376,
+      "status": "candidate",
+      "target_side": "left",
+      "group_id": "parallel-1"
+    },
+    {
+      "id": "join",
+      "type": "join",
+      "label": "Join\n汇合",
+      "x": 880,
+      "y": 228,
+      "status": "pending",
+      "size": "compact",
+      "target_side": "left"
+    },
+    {
+      "id": "human",
+      "type": "human_review",
+      "label": "Human Review\n人工审核",
+      "x": 1120,
+      "y": 228,
+      "status": "review",
+      "size": "wide"
+    },
+    {
+      "id": "artifact",
+      "type": "artifact",
+      "label": "产物\nReview PASS",
+      "x": 1450,
+      "y": 228,
+      "status": "completed",
+      "target_side": "left"
+    },
+    {
+      "id": "retry",
+      "type": "retry",
+      "label": "Retry\n重试",
+      "x": 1250,
+      "y": 410,
+      "status": "blocked",
+      "size": "compact"
+    },
+    {
+      "id": "reference",
+      "type": "reference",
+      "label": "开发子流程\nReference ↗",
+      "x": 1550,
+      "y": 410,
+      "status": "unknown",
+      "target_flow": "development",
+      "accessibility_label": "打开开发子流程引用"
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-start-fork",
+      "source": "start",
+      "target": "fork",
+      "type": "flow",
+      "status": "completed",
+      "route_points": [
+        [
+          172,
+          256
+        ],
+        [
+          300,
+          256
+        ]
+      ],
+      "source_side": "right",
+      "target_side": "left"
+    },
+    {
+      "id": "e-fork-a",
+      "source": "fork",
+      "target": "agent-a",
+      "type": "parallel",
+      "status": "active",
+      "source_side": "right",
+      "target_side": "left",
+      "fanout_group": "fork-agents"
+    },
+    {
+      "id": "e-fork-b",
+      "source": "fork",
+      "target": "agent-b",
+      "type": "parallel",
+      "status": "active",
+      "source_side": "right",
+      "target_side": "left",
+      "fanout_group": "fork-agents"
+    },
+    {
+      "id": "e-fork-c",
+      "source": "fork",
+      "target": "agent-c",
+      "type": "parallel",
+      "status": "active",
+      "source_side": "right",
+      "target_side": "left",
+      "fanout_group": "fork-agents"
+    },
+    {
+      "id": "e-a-join",
+      "source": "agent-a",
+      "target": "join",
+      "type": "parallel",
+      "status": "pending",
+      "source_side": "right",
+      "target_side": "left",
+      "fanin_group": "agents-join"
+    },
+    {
+      "id": "e-b-join",
+      "source": "agent-b",
+      "target": "join",
+      "type": "parallel",
+      "status": "pending",
+      "source_side": "right",
+      "target_side": "left",
+      "fanin_group": "agents-join"
+    },
+    {
+      "id": "e-c-join",
+      "source": "agent-c",
+      "target": "join",
+      "type": "parallel",
+      "status": "candidate",
+      "source_side": "right",
+      "target_side": "left",
+      "fanin_group": "agents-join"
+    },
+    {
+      "id": "e-join-human",
+      "source": "join",
+      "target": "human",
+      "type": "handoff",
+      "status": "pending",
+      "route_points": [
+        [
+          1012,
+          256
+        ],
+        [
+          1120,
+          256
+        ]
+      ],
+      "source_side": "right",
+      "target_side": "left"
+    },
+    {
+      "id": "e-human-artifact",
+      "source": "human",
+      "target": "artifact",
+      "type": "human_review",
+      "status": "review",
+      "route_points": [
+        [
+          1340,
+          256
+        ],
+        [
+          1450,
+          256
+        ]
+      ],
+      "source_side": "right",
+      "target_side": "left"
+    },
+    {
+      "id": "e-human-retry",
+      "source": "human",
+      "target": "retry",
+      "type": "retry",
+      "status": "blocked",
+      "route_points": [
+        [
+          1230,
+          316
+        ],
+        [
+          1230,
+          335
+        ],
+        [
+          1260,
+          335
+        ],
+        [
+          1260,
+          410
+        ]
+      ],
+      "source_side": "bottom",
+      "target_side": "top",
+      "crossing": true
+    },
+    {
+      "id": "e-retry-human",
+      "source": "retry",
+      "target": "human",
+      "type": "loop",
+      "status": "return",
+      "route_points": [
+        [
+          1230,
+          410
+        ],
+        [
+          1230,
+          391
+        ],
+        [
+          1200,
+          391
+        ],
+        [
+          1200,
+          316
+        ]
+      ],
+      "source_side": "top",
+      "target_side": "bottom"
+    },
+    {
+      "id": "e-artifact-reference",
+      "source": "artifact",
+      "target": "reference",
+      "type": "event",
+      "status": "unknown",
+      "route_points": [
+        [
+          1605,
+          316
+        ],
+        [
+          1605,
+          410
+        ]
+      ],
+      "source_side": "bottom",
+      "target_side": "top"
+    }
+  ],
+  "subflows": {
+    "development": {
+      "title": "开发子流程",
+      "entry": "进入开发阶段",
+      "next": "回到主流程",
+      "loop": "失败后回到 Review",
+      "nodes": [],
+      "edges": []
+    }
+  },
+  "layout": {
+    "mode": "centered-flow"
+  }
+}

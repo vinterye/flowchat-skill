@@ -1,0 +1,66 @@
+{
+  "title": "Flowchat 1→2 居中分叉路由",
+  "layout": {
+    "mode": "centered-flow"
+  },
+  "viewBox": [
+    0,
+    0,
+    800,
+    500
+  ],
+  "nodes": [
+    {
+      "id": "source",
+      "type": "process",
+      "label": "Source\n总控出口",
+      "x": 40,
+      "y": 20,
+      "width": 120,
+      "height": 88,
+      "status": "active"
+    },
+    {
+      "id": "target-1",
+      "type": "process",
+      "label": "Target 1\n并行节点",
+      "x": 100,
+      "y": 300,
+      "width": 120,
+      "height": 88,
+      "status": "pending"
+    },
+    {
+      "id": "target-2",
+      "type": "process",
+      "label": "Target 2\n并行节点",
+      "x": 500,
+      "y": 300,
+      "width": 120,
+      "height": 88,
+      "status": "pending"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-1",
+      "source": "source",
+      "target": "target-1",
+      "type": "parallel",
+      "status": "pending",
+      "fanout_group": "fan-1",
+      "source_side": "bottom",
+      "target_side": "top"
+    },
+    {
+      "id": "edge-2",
+      "source": "source",
+      "target": "target-2",
+      "type": "parallel",
+      "status": "pending",
+      "fanout_group": "fan-1",
+      "source_side": "bottom",
+      "target_side": "top"
+    }
+  ]
+}

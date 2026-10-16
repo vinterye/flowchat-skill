@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "topology-projection/v1",
+  "title": "Fact-preserving Flowchat TopologyProjection",
+  "type": "object",
+  "required": ["schema", "nodes", "edges", "groups", "stageBindings", "runtimeOverlay", "conflicts", "sources"],
+  "properties": {
+    "schema": {"const": "topology-projection/v1"},
+    "nodes": {"type": "array", "items": {"$ref": "#/$defs/node"}},
+    "edges": {"type": "array", "items": {"$ref": "#/$defs/edge"}},
+    "groups": {"type": "array", "items": {"$ref": "#/$defs/group"}},
+    "stageBindings": {"type": "array", "items": {"$ref": "#/$defs/stageBinding"}},
+    "runtimeOverlay": {"$ref": "#/$defs/runtimeOverlay"},
+    "conflicts": {"type": "array", "items": {"type": "object", "required": ["type"], "additionalProperties": true}},
+    "sources": {"type": "array", "items": {"$ref": "#/$defs/source"}}
+  },
+  "$defs": {
+    "ref": {"type": "object", "required": ["source_id", "pointer"], "properties": {"source_id": {"type": "string"}, "pointer": {"type": "string"}}, "additionalProperties": false},
+    "node": {
+      "type": "object",
+      "required": ["id", "kind", "label", "status", "source_refs", "evidence_refs", "metadata"],
+      "properties": {
+        "id": {"type": "string"}, "kind": {"type": "string"}, "type": {"type": "string"}, "family": {"type": "string"}, "shape": {"type": "string"}, "icon": {"type": "string"}, "label": {"type": "string"}, "status": {}, "raw_status": {}, "visual_status": {"type": "string"},
+        "source_kind": {"type": "string"}, "size": {"type": "string"}, "group_id": {"type": ["string", "null"]}, "port_role": {}, "accessibility_label": {"type": "string"}, "children": {"type": "array"}, "drilldown": {"type": "object"}, "source_refs": {"type": "array", "items": {"$ref": "#/$defs/ref"}},
+        "evidence_refs": {"type": "array"}, "metadata": {"type": "object"}, "location": {}
+      },
+      "additionalProperties": true
+    },
+    "edge": {
+      "type": "object",
+      "required": ["id", "from", "to", "relation", "canonical_key", "directions"],
+      "properties": {
+        "id": {"type": "string"}, "from": {"type": "string"}, "to": {"type": "string"}, "relation": {"type": "string"}, "type": {"type": "string"}, "edge_type": {"type": "string"}, "edge_family": {"type": "string"},
+        "canonical_key": {"type": "string"}, "status": {}, "raw_status": {}, "visual_status": {"type": "string"}, "routing": {"type": "string"}, "source_side": {"type": "string"}, "target_side": {"type": "string"}, "source_port": {"type": "string"}, "target_port": {"type": "string"}, "label": {"type": "string"}, "source_refs": {"type": "array"}, "evidence_refs": {"type": "array"}, "directions": {"type": "array"}
+      },
+      "additionalProperties": true
+    },
+    "group": {"type": "object", "required": ["id", "kind", "member_ids", "source_refs"], "properties": {"id": {"type": "string"}, "kind": {"type": "string"}, "member_ids": {"type": "array", "items": {"type": "string"}}, "source_refs": {"type": "array"}}, "additionalProperties": true},
+    "stageBinding": {"type": "object", "required": ["id", "stage_id", "target_ids", "binding_kind", "status", "source_refs"], "properties": {"id": {"type": "string"}, "stage_id": {"type": "string"}, "target_ids": {"type": "array", "items": {"type": "string"}}, "binding_kind": {"type": "string"}, "status": {}, "source_refs": {"type": "array"}, "evidence_refs": {"type": "array"}}, "additionalProperties": true},
+    "runtimeOverlay": {"type": "object", "required": ["source_refs", "selected_run", "projects", "stage_bindings"], "properties": {"source_refs": {"type": "array"}, "selected_run": {}, "projects": {"type": "array"}, "stage_bindings": {"type": "array"}}, "additionalProperties": true},
+    "source": {"type": "object", "required": ["source_id", "path", "sha256", "role", "status"], "properties": {"source_id": {"type": "string"}, "path": {"type": "string"}, "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}, "role": {"type": "string"}, "status": {"type": "string"}}, "additionalProperties": true}
+  }
+}

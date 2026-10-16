@@ -1,0 +1,3 @@
+interface:
+  display_name: "Flowchat"
+  short_description: "Generate standalone themed Flowchat HTML pages"

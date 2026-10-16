@@ -1,0 +1,133 @@
+{
+  "note": "Paths are placeholders. Supply real sources via generate_v2_topology.py --agents/--capabilities/--relationships/--runtime/--agent-flow, or set FLOWCHAT_AIOS_ROOT.",
+  "schema": "preservation-map/v1",
+  "scope": "TopologyProjection data layer only",
+  "rules": {
+    "fact_source_only": true,
+    "ui_may_not_create_business_nodes": true,
+    "reverse_relationships": "canonicalize_before_projection_and_retain_raw_directions",
+    "stage_binding": "explicit_only",
+    "registry_runtime_boundary": "registry_status_never_overwrites_runtime_status",
+    "unknown_candidate_not_run": "preserve_exact_source_value",
+    "location_contract": "copy_source_location_without_normalization"
+  },
+  "sources": [
+    {
+      "source_id": "agent_registry",
+      "path": "<FLOWCHAT_AIOS_ROOT>/registry/agents.json",
+      "role": "Agent Registry",
+      "preserve_fields": [
+        "id",
+        "name",
+        "type",
+        "path",
+        "entrypoint",
+        "version",
+        "status",
+        "decision_gateway",
+        "usage_card",
+        "runtime_gate",
+        "test_pack_id"
+      ],
+      "project_to": [
+        "nodes(kind=agent)"
+      ],
+      "status_policy": "status is copied verbatim"
+    },
+    {
+      "source_id": "capability_registry",
+      "path": "<FLOWCHAT_AIOS_ROOT>/capabilities/capabilities.json",
+      "role": "Capability Registry",
+      "preserve_fields": [
+        "agent_id",
+        "status",
+        "capabilities[].id",
+        "capabilities[].name",
+        "capabilities[].input",
+        "capabilities[].output",
+        "capabilities[].trigger",
+        "capabilities[].constraints"
+      ],
+      "project_to": [
+        "nodes(kind=capability)",
+        "edges(relation=provides_capability)"
+      ],
+      "status_policy": "capability parent status is copied verbatim; no readiness is inferred"
+    },
+    {
+      "source_id": "relationship_registry",
+      "path": "<FLOWCHAT_AIOS_ROOT>/relationships/relationships.json",
+      "role": "Relationship Registry",
+      "preserve_fields": [
+        "nodes[]",
+        "edges[].id",
+        "edges[].type",
+        "edges[].from",
+        "edges[].to",
+        "edges[].artifact",
+        "edges[].automated",
+        "edges[].carrier",
+        "edges[].evidence"
+      ],
+      "project_to": [
+        "nodes(from relationship nodes)",
+        "edges(canonical)"
+      ],
+      "status_policy": "relationship status is copied verbatim when present",
+      "evidence_policy": "edge evidence is required and retained"
+    },
+    {
+      "source_id": "flow_registry",
+      "path": "<WORKSPACE>/agent_builder/registry/agent-flow-registry.json",
+      "role": "Flow Registry candidate projection",
+      "preserve_fields": [
+        "status",
+        "assets",
+        "hierarchy",
+        "workflows",
+        "links",
+        "location_registry",
+        "sources"
+      ],
+      "project_to": [
+        "nodes(from explicit assets/hierarchy/flow_nodes/gates)",
+        "edges(from explicit links/next_node)",
+        "groups(from explicit parent/member records)",
+        "stageBindings(candidate_projection from explicit flow stage/owner/gate records)"
+      ],
+      "status_policy": "candidate_projection boundary is retained; candidate data never becomes runtime evidence"
+    },
+    {
+      "source_id": "runtime",
+      "path": "<WORKSPACE>/runtime/state.json",
+      "role": "Runtime state and event source",
+      "preserve_fields": [
+        "projects[]",
+        "tasks[]",
+        "tasks[].status",
+        "tasks[].currentStage",
+        "tasks[].nodes[]",
+        "tasks[].events[]",
+        "stage_id",
+        "run_id",
+        "agent_id",
+        "status"
+      ],
+      "project_to": [
+        "runtimeOverlay only",
+        "nodes(kind=runtime_task_node) for traceable runtime records",
+        "stageBindings(binding_kind=runtime_event)"
+      ],
+      "status_policy": "runtime status remains in runtime namespace and is never merged into registry status"
+    }
+  ],
+  "suppressed_ui_objects": {
+    "ids": [
+      "rules-protocol",
+      "human-gate",
+      "harness-registry",
+      "artifact-lineage"
+    ],
+    "rule": "only preserve if an identical id is explicitly present in a fact source; never create from UI labels"
+  }
+}

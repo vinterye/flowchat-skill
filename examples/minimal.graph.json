@@ -9,7 +9,7 @@
     {
       "id": "intake",
       "label": "需求接入",
-      "kind": "stage",
+      "type": "stage",
       "status": "completed",
       "x": 60,
       "y": 300,
@@ -20,7 +20,7 @@
     {
       "id": "design",
       "label": "方案设计",
-      "kind": "stage",
+      "type": "stage",
       "status": "active",
       "x": 380,
       "y": 300,
@@ -31,7 +31,7 @@
     {
       "id": "build",
       "label": "开发实现",
-      "kind": "stage",
+      "type": "stage",
       "status": "pending",
       "x": 700,
       "y": 300,
@@ -42,9 +42,9 @@
     {
       "id": "review",
       "label": "验收评审",
-      "kind": "gate",
+      "type": "human_review",
       "status": "pending",
-      "x": 1020,
+      "x": 1060,
       "y": 300,
       "width": 180,
       "height": 90,
@@ -53,9 +53,9 @@
     {
       "id": "ship",
       "label": "发布交付",
-      "kind": "stage",
+      "type": "stage",
       "status": "pending",
-      "x": 1340,
+      "x": 1380,
       "y": 300,
       "width": 180,
       "height": 90,
@@ -64,10 +64,10 @@
     {
       "id": "rework",
       "label": "返工：评审未通过",
-      "kind": "issue",
+      "type": "issue",
       "status": "blocked",
-      "x": 1020,
-      "y": 540,
+      "x": 700,
+      "y": 560,
       "width": 180,
       "height": 90
     }
@@ -77,6 +77,7 @@
       "id": "e-intake-design",
       "source": "intake",
       "target": "design",
+      "type": "main",
       "status": "completed",
       "source_port": "right-2",
       "target_port": "left-2"
@@ -85,6 +86,7 @@
       "id": "e-design-build",
       "source": "design",
       "target": "build",
+      "type": "main",
       "status": "active",
       "source_port": "right-2",
       "target_port": "left-2"
@@ -93,6 +95,7 @@
       "id": "e-build-review",
       "source": "build",
       "target": "review",
+      "type": "main",
       "status": "pending",
       "source_port": "right-2",
       "target_port": "left-2"
@@ -101,6 +104,7 @@
       "id": "e-review-ship",
       "source": "review",
       "target": "ship",
+      "type": "main",
       "status": "pending",
       "label": "通过",
       "source_port": "right-2",
@@ -110,20 +114,21 @@
       "id": "e-review-rework",
       "source": "review",
       "target": "rework",
+      "type": "return",
       "status": "return",
       "label": "未通过",
-      "source_port": "bottom-2",
-      "target_port": "top-2"
+      "source_port": "left-3",
+      "target_port": "right-2"
     },
     {
       "id": "e-rework-build",
       "source": "rework",
       "target": "build",
+      "type": "return",
       "status": "return",
       "label": "返工回流",
       "routing": "auto",
-      "crossing": true,
-      "source_port": "left-2",
+      "source_port": "top-2",
       "target_port": "bottom-2"
     }
   ],
@@ -137,7 +142,7 @@
         {
           "id": "d1",
           "label": "草稿",
-          "kind": "agent",
+          "type": "process",
           "status": "completed",
           "x": 120,
           "y": 120,
@@ -147,7 +152,7 @@
         {
           "id": "d2",
           "label": "内部评审",
-          "kind": "gate",
+          "type": "human_review",
           "status": "active",
           "x": 440,
           "y": 120,
@@ -157,7 +162,7 @@
         {
           "id": "d3",
           "label": "定稿",
-          "kind": "summary",
+          "type": "artifact",
           "status": "pending",
           "x": 760,
           "y": 120,
@@ -170,6 +175,7 @@
           "id": "s1",
           "source": "d1",
           "target": "d2",
+          "type": "main",
           "status": "active",
           "source_port": "right-2",
           "target_port": "left-2"
@@ -178,6 +184,7 @@
           "id": "s2",
           "source": "d2",
           "target": "d3",
+          "type": "main",
           "status": "pending",
           "source_port": "right-2",
           "target_port": "left-2"
@@ -186,6 +193,7 @@
           "id": "s3",
           "source": "d2",
           "target": "d1",
+          "type": "return",
           "status": "return",
           "routing": "auto",
           "source_port": "bottom-2",

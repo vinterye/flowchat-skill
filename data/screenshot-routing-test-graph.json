@@ -1,0 +1,269 @@
+{
+  "title": "Flowchat 截图路由回归",
+  "layout": {
+    "mode": "centered-flow"
+  },
+  "viewBox": [
+    0,
+    0,
+    1500,
+    900
+  ],
+  "edge_editing": false,
+  "nodes": [
+    {
+      "id": "demand-control",
+      "type": "controller",
+      "label": "需求总控\n用户目标拆解",
+      "x": 190,
+      "y": 80,
+      "width": 220,
+      "height": 88,
+      "status": "pending",
+      "output_refs": [
+        "goal:current"
+      ],
+      "context_refs": [
+        "run:current",
+        "policy:active"
+      ]
+    },
+    {
+      "id": "research-control",
+      "type": "controller",
+      "label": "研究总控\n竞品与证据收集",
+      "x": 760,
+      "y": 80,
+      "width": 220,
+      "height": 88,
+      "status": "pending",
+      "input_refs": [
+        "goal:current"
+      ],
+      "output_refs": [
+        "research:brief"
+      ],
+      "context_refs": [
+        "run:current",
+        "policy:active"
+      ]
+    },
+    {
+      "id": "requirements-agent",
+      "type": "agent",
+      "label": "需求解析 Agent\n提取目标、边界、验收条件",
+      "x": 190,
+      "y": 300,
+      "width": 220,
+      "height": 88,
+      "status": "pending",
+      "input_refs": [
+        "goal:current"
+      ],
+      "output_refs": [
+        "requirements:analysis"
+      ],
+      "context_refs": [
+        "run:current"
+      ]
+    },
+    {
+      "id": "competitor-agent",
+      "type": "agent",
+      "label": "竞品研究 Agent\n汇总竞品证据并生成对比结论",
+      "x": 570,
+      "y": 300,
+      "width": 220,
+      "height": 88,
+      "status": "pending",
+      "input_refs": [
+        "research:brief"
+      ],
+      "output_refs": [
+        "competitor:evidence"
+      ],
+      "context_refs": [
+        "run:current"
+      ]
+    },
+    {
+      "id": "prototype-agent",
+      "type": "agent",
+      "label": "原型 Agent\n读取已确认需求并生成低保真原型",
+      "x": 950,
+      "y": 300,
+      "width": 220,
+      "height": 88,
+      "status": "pending",
+      "input_refs": [
+        "requirements:analysis"
+      ],
+      "output_refs": [
+        "prototype:lowfi"
+      ],
+      "context_refs": [
+        "run:current"
+      ]
+    },
+    {
+      "id": "human-gate",
+      "type": "gate",
+      "label": "人工审核 Gate\n确认后进入下游产物",
+      "x": 570,
+      "y": 540,
+      "width": 220,
+      "height": 106,
+      "status": "review",
+      "input_refs": [
+        "requirements:analysis",
+        "competitor:evidence",
+        "prototype:lowfi"
+      ],
+      "output_refs": [
+        "review:decision"
+      ],
+      "context_refs": [
+        "run:current",
+        "policy:active"
+      ]
+    },
+    {
+      "id": "artifact",
+      "type": "artifact",
+      "label": "结构化执行回执\nFlowchat + evidence",
+      "x": 570,
+      "y": 780,
+      "width": 220,
+      "height": 88,
+      "status": "pending",
+      "input_refs": [
+        "review:decision"
+      ],
+      "output_refs": [
+        "artifact:execution-receipt"
+      ],
+      "context_refs": [
+        "run:current"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-demand-requirements",
+      "source": "demand-control",
+      "target": "requirements-agent",
+      "type": "handoff",
+      "status": "pending",
+      "source_side": "bottom",
+      "target_side": "top",
+      "dependency": {
+        "kind": "input",
+        "output_ref": "goal:current",
+        "input_ref": "goal:current"
+      }
+    },
+    {
+      "id": "e-demand-research",
+      "source": "demand-control",
+      "target": "research-control",
+      "type": "handoff",
+      "status": "pending",
+      "source_side": "right",
+      "target_side": "left",
+      "dependency": {
+        "kind": "input",
+        "output_ref": "goal:current",
+        "input_ref": "goal:current"
+      }
+    },
+    {
+      "id": "e-research-competitor",
+      "source": "research-control",
+      "target": "competitor-agent",
+      "type": "parallel",
+      "status": "pending",
+      "source_side": "bottom",
+      "target_side": "top",
+      "dependency": {
+        "kind": "input",
+        "output_ref": "research:brief",
+        "input_ref": "research:brief"
+      }
+    },
+    {
+      "id": "e-requirements-prototype",
+      "source": "requirements-agent",
+      "target": "prototype-agent",
+      "type": "handoff",
+      "status": "pending",
+      "source_side": "right",
+      "target_side": "left",
+      "dependency": {
+        "kind": "input",
+        "output_ref": "requirements:analysis",
+        "input_ref": "requirements:analysis"
+      },
+      "crossing": true
+    },
+    {
+      "id": "e-requirements-gate",
+      "source": "requirements-agent",
+      "target": "human-gate",
+      "type": "handoff",
+      "status": "pending",
+      "fanin_group": "agents-gate",
+      "source_side": "bottom",
+      "target_side": "top",
+      "dependency": {
+        "kind": "input",
+        "output_ref": "requirements:analysis",
+        "input_ref": "requirements:analysis"
+      }
+    },
+    {
+      "id": "e-competitor-gate",
+      "source": "competitor-agent",
+      "target": "human-gate",
+      "type": "handoff",
+      "status": "pending",
+      "fanin_group": "agents-gate",
+      "source_side": "bottom",
+      "target_side": "top",
+      "dependency": {
+        "kind": "input",
+        "output_ref": "competitor:evidence",
+        "input_ref": "competitor:evidence"
+      }
+    },
+    {
+      "id": "e-prototype-gate",
+      "source": "prototype-agent",
+      "target": "human-gate",
+      "type": "handoff",
+      "status": "pending",
+      "fanin_group": "agents-gate",
+      "source_side": "bottom",
+      "target_side": "top",
+      "dependency": {
+        "kind": "input",
+        "output_ref": "prototype:lowfi",
+        "input_ref": "prototype:lowfi"
+      }
+    },
+    {
+      "id": "e-gate-artifact",
+      "source": "human-gate",
+      "target": "artifact",
+      "type": "review",
+      "status": "pending",
+      "source_side": "bottom",
+      "target_side": "top",
+      "dependency": {
+        "kind": "review",
+        "output_ref": "review:decision",
+        "input_ref": "review:decision"
+      }
+    }
+  ],
+  "dependency_contract": "causal-v1"
+}

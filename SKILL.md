@@ -5,134 +5,117 @@ description: "Flowchat · 流程图生成器：从 graph JSON 生成单文件、
 
 # Flowchat · 流程图渲染器
 
-把 graph JSON 变成**单个自包含 HTML 文件**，浏览器直接打开即可。无 iframe、无 srcdoc、无外部资源、无网络请求、无构建步骤。
+把 graph JSON 变成**一个自包含 HTML 文件**，浏览器直接打开即可。不用 iframe、不用 srcdoc、无外链、无构建。
 
 ## When to use
 
-- The user wants a flow / process / pipeline / architecture diagram as a browsable page.
-- The user hands you `nodes` + `edges` data (or describes a process you can model as nodes + edges).
-- The user wants to restyle an existing flow page with their own colors.
+- 用户要一个可浏览的流程图 / 流程 / 流水线 / 架构页面。
+- 用户给了 `nodes` + `edges` 数据，或描述了一个可以建模成节点 + 边的流程。
+- 用户想用自己的配色重绘一个已有流程页面。
 
-Do **not** use this to produce an image, a Mermaid snippet, or an embedded widget. The deliverable here is a standalone HTML file.
+**不要**用它产出图片、Mermaid 片段或嵌入式组件——这里的交付物是独立的 HTML 文件。
 
-## Quick start
+## 铁律（按此顺序执行）
 
-All paths below are relative to the skill directory. Python 3.10+ only, zero third-party dependencies.
+1. **先校验，再生成。** `validate_graph.py` 是硬前置，不是可选项。边的端点指向不存在的节点时，渲染器会**静默丢边**——你会拿到一个看着正常但内容缺失的页面。
+2. **不要猜测枚举。** 节点类型、边类型、状态一律以 `data/type-registry-v1.json` 为准（49 / 19 / 13）。文档里没写的类型就是不存在的类型。
+3. **几何不达标就是失败，不是警告。** 生成命令返回 2 时**没有写文件**，修图重跑，不要手工改 HTML。
+4. **不要自己造业务对象。** 容器靠 `children` 关联已有节点，引用靠 `drilldown` 指向已注册流程。输入里没有的东西，图上就不该出现。
+
+## 三步命令
 
 ```bash
-# 1. validate input first (fails loudly on bad data)
-python3 scripts/validate_graph.py examples/minimal.graph.json
+# 1. 校验（exit 1 = 图有错，已打印字段与边 id；exit 2 = 文件缺失或 JSON 非法）
+python3 scripts/validate_graph.py path/to/graph.json
 
-# 2. render
+# 2. 生成（exit 2 = 几何不达标，未写文件，已打印是哪条边、怎么修）
 python3 scripts/generate_flowchat.py \
-  --graph examples/minimal.graph.json \
-  --theme examples/theme.example.json \
-  --title "交付流程" \
-  --output out/flowchat.html
+  --graph path/to/graph.json \
+  --theme path/to/theme.json \
+  --title "流程标题" \
+  --output path/to/flowchat.html
 
-# 3. open out/flowchat.html in a browser
+# 3. 几何门禁
+python3 harness/flowchat_local_harness.py path/to/flowchat.html --output out/harness-report.json
 ```
 
-`--theme` is optional; omit it to use the built-in neutral light theme. `--graph` is optional too; omit it to render the built-in 22-node demo graph.
+`--graph` 省略则渲染内置 22 节点示例图；`--theme` 省略则用内置浅色主题。
 
-## Rules that govern generation
+判读第 3 步：看 `static_status` 字段，**不要看退出码**。没有浏览器回执时 `status` 恒为 `blocked`、退出码恒为 2，这是证据门禁的设计，不是几何失败。
 
-1. **Never invent visual facts.** If the user supplies a theme or design tokens, use them. If not, use the built-in defaults. Do not invent colors, node shapes, edge styles, or status mappings "because it looks better". If a required visual value is genuinely unknown, mark it `unknown` and ask instead of guessing.
-2. **Validate before render.** Always run `validate_graph.py` first. A dangling `source`/`target` is an error, not something to silently drop.
-3. **Never hand-edit the generated HTML.** Change the graph or the theme and regenerate.
-4. **One file out.** The output must remain self-contained; do not add CDN links, fonts, or external images.
+```bash
+python3 -c "import json;print(json.load(open('out/harness-report.json'))['static_status'])"
+```
 
-## Input contract
+需要完整浏览器证据时才用 `scripts/self_check_flowchat.py`（`--browser-receipt` 必填）。
 
-Graph JSON:
+## 输入契约
+
+顶层：`nodes`（必填非空）、`edges`、`viewBox`、`subflows`、`layout`、`dependency_contract`。
+
+| 层级 | 字段 |
+| --- | --- |
+| 节点 | `id` `label` `type`（`kind` 为兼容别名）`status` `raw_status` `visual_status` `x` `y` `width` `height` `order` `children` `drilldown` `input_refs` `output_refs` `context_refs` |
+| 边 | `id` `source` `target` `type` `status` `source_port` `target_port` `source_side` `target_side` `routing` `route_points` `crossing` `fanout_group` `fanin_group` `label` `dependency` |
+| 子流程 | `subflows.<stage-node-id>`：`title` `entry` `next` `loop` `nodes` `edges` |
+
+**snake_case 与 camelCase 都接受**：`source_port`/`sourcePort`、`route_points`/`routePoints`/`path`、`dependencyContract`。Graph V2 适配器输出 camelCase，不需要先转换。
+
+### 端口
+
+`left` `right` `top` `bottom`，可选三车道 `-1/-2/-3`（落在该边 1/3、1/2、2/3 处）。扇出扇入用编号车道，多条边才会落在稳定且互不重叠的锚点上；不写车道则是中心端口。
+
+### 路由
+
+**普通近邻边不要给 `route_points`**，交给自动路由选直线或少弯折路径。只有回环、绕行、外框绕行、明确交叉才保留显式 `route_points`，并标 `crossing: true`。
+
+相对位置决定端口：水平中心距离占优走 `left`/`right`，垂直占优走 `top`/`bottom`。违背这个关系的显式端口会被 harness 判 `relative_port_mismatch`。完整阈值见 [references/routing-rules.md](references/routing-rules.md)。
+
+### 状态
+
+用 `completed` `active` `pending` `blocked` `return` 让动画跟着运行状态走。原始运行值（`unknown` `candidate` `not_run` `not_implemented`）留在 `raw_status`，`visual_status` 只管视觉分类。**状态不改变节点类型**：类型填充、形状、图标是稳定语义。
+
+### 因果边契约（可选）
+
+图声明 `dependency_contract: "causal-v1"` 后，只有把一个 source output 接到一个 target input 的依赖才画成边：
 
 ```json
-{
-  "viewBox": [0, 0, 1600, 900],
-  "nodes": [
-    {"id": "intake", "label": "需求接入", "kind": "stage", "status": "completed",
-     "x": 80, "y": 120, "width": 200, "height": 90}
-  ],
-  "edges": [
-    {"id": "e1", "source": "intake", "target": "design", "status": "active",
-     "source_port": "right-1", "target_port": "left-1"}
-  ],
-  "subflows": {
-    "design": {
-      "title": "设计子流程", "entry": "d1", "next": "开发", "loop": "返工",
-      "nodes": [{"id": "d1", "label": "草稿"}],
-      "edges": [{"id": "s1", "source": "d1", "target": "d2"}]
-    }
-  }
-}
+{"dependency": {"kind": "input", "output_ref": "requirements:analysis", "input_ref": "requirements:analysis"}}
 ```
 
-Node fields: `id`, `label`, `shape`, `x`, `y`, `width`, `height`, `status`, `kind`, `order`.
-Edge fields: `id`, `source`, `target`, `status`, `kind`, `route_points`, `routing`, `source_side`, `target_side`, `source_port`, `target_port`, `label`, `label_x`, `label_y`, `crossing`.
+两个节点共享同一个 run / stage / policy **不是**依赖，放 `context_refs`，不要画边。
 
-### Node `kind` (drives shape and color family)
+## V2 证据绑定拓扑（可选）
 
-`orchestrator` top control hub · `control` rules center · `review-center` review center · `stage` numbered main stage · `dispatch` parallel dispatch · `agent` worker card · `summary` completion check · `gate` acceptance/review gate · `issue` blocked-event card · `feedback` feedback rail.
-
-### Node / edge `status`
-
-`completed`, `active`, `pending`, `blocked`, `return`. Status is expressed with **dash and animation**, never with thicker lines or bigger arrows. Completed and pending nodes render dimmed neutral gray so the active path stays readable.
-
-### Ports and routing
-
-A port is a side plus an optional lane: `left-1`, `left-2`, `left-3` (same for `right`, `top`, `bottom`). The three lanes resolve to 1/3, 1/2, 2/3 along that side. Use numbered ports for fan-out and fan-in so edges land on stable, separate anchors; a plain side name (`left`) remains the center port.
-
-- For ordinary neighbor-to-neighbor edges, **do not** supply `route_points`; let auto-routing choose a straight or one-bend path.
-- Keep explicit `route_points` only for feedback loops, wrap-around, or deliberately crossing edges, and mark them `crossing: true` or explain with an edge label.
-- `routing: "auto"` picks the shortest safe orthogonal path around other nodes and occupied lanes; it prefers straight, then one bend, then padded node-boundary lanes with bend/crossing/overlap penalties.
-- When an edge is unrelated to the currently selected node, route it away from that node rather than through its visual neighborhood. Prefer an empty corridor, then the corridor with the fewest occupied lanes. This outranks minimizing bends or length, but must preserve declared anchors.
-
-### Center alignment and hierarchy
-
-Center alignment applies only to primary parent/child or stage-flow edges; feedback, return, auxiliary, and evidence edges keep their declared routing. In `TB`/`BT` a one-to-one pair shares an x-center; in `LR`/`RL` it shares a y-center. One-to-many: put the source center on the bounding-box center of its targets. Many-to-one: put the target center on the bounding-box center of its sources. Many-to-many: do not force a single centerline — distribute across numbered ports and route each relation independently.
-
-Optional semantic fields pass through without being hardcoded into the renderer: `layout_group`, `layout_role`, `align_policy`, and edge `relation` / `route_policy`.
-
-## Subflows
-
-`subflows` is keyed by stage node ID. Each entry carries `title`, `entry`, `next`, `loop`, `nodes`, `edges`, so a stage can expose its own local topology plus its handoff condition to the next stage and its loop-back condition. Clicking a stage opens its process map.
-
-## Theme
-
-Optional JSON. Any subset of the tokens in [references/theme.md](references/theme.md); missing keys fall back to the built-in neutral light theme. Override tokens only — never rewrite the host page through global `.node` / `.edge` selectors.
-
-## Geometry gate (optional quality check)
-
-The renderer enforces geometry itself, and the Harness verifies it:
-
-- total edge length ≥ 90 px, final arrow segment ≥ 75 px
-- no near-zero, reverse, or diagonal segments
-- every endpoint magnetized to the declared node side; aligned ports stay straight
-- overlapping lines allowed only when direction and shared side agree; intentional crossings marked `crossing: true`
-- edge stroke ≤ 2 px, arrow marker ≤ 5×5
-- centered, non-overflowing text; diamond text centered
-- no intermediate-node occlusion
-
-The renderer **rejects** invalid routes rather than adding a reverse dogleg, so a bad route can never silently become a misleading arrow.
-
-Run the static gate (no browser needed):
+两级 Orchestrator Hub 拓扑用单独入口，不从单个 JSON 凭空造图：
 
 ```bash
-python3 harness/flowchat_local_harness.py out/flowchat.html --output out/harness-report.json
+python3 scripts/generate_v2_topology.py \
+  --agents /path/to/agents.json \
+  --capabilities /path/to/capabilities.json \
+  --relationships /path/to/relationships.json \
+  --runtime /path/to/runtime-state.json \
+  --output out/flowchat-v2.html
+
+python3 scripts/validate_v2_topology.py out/flowchat-v2.html --output out/v2-report.json
 ```
 
-Read `static_status` in the report to know whether geometry and interaction hooks passed. `status` is `blocked` — and the process exits `2` — whenever no browser receipt is supplied; that means "no browser evidence", **not** "geometry failed".
+规则：Stage 是业务对象，不能渲染成 Agent；没有证据的关系不画边；注册表投影永远不是运行时证据；`blocked`/`not_run`/`candidate`/`unknown` 必须保持各自可辨。注册表不在默认位置时显式传参，或设置 `FLOWCHAT_AIOS_ROOT`。
 
-Run the full gate only when you have real browser evidence for this exact artifact:
+## 硬约束（生成结果恒定满足）
 
-```bash
-python3 scripts/self_check_flowchat.py out/flowchat.html \
-  --browser-receipt out/browser-receipt.json \
-  --output out/harness-report.json
-```
+- 边长 ≥ 90 px，末端箭头段 ≥ 75 px
+- 无零长 / 反向 / 斜向线段；端点吸附到声明的节点边
+- 连线 ≤ 2 px，箭头 ≤ 5×5，单一连线配色
+- 文字居中不溢出，菱形文字居中，不穿过中间节点
+- 状态用虚线与动画表达，**不靠加粗线条或放大箭头**
+- 渲染器**拒绝**非法路由，不会补一条反向折线让箭头骗人
 
-A receipt for a different file, or a `file://` load instead of HTTP, is `blocked`. Missing evidence is never reported as `not_run` success.
+## 已知边界
 
-## Acceptance check
+- **菱形节点（`gate` / `decision`）配编号车道端口**会触发 `source_not_on_boundary`：渲染器把车道投影到矩形边界，harness 要求端点落在菱形边上。改用非菱形类型（`human_review` / `review`）或显式 `route_points`。这是既有不一致，不要改几何内核来绕过。
+- 生成的 HTML **不要手工改**。改图或改主题重新生成。
 
-The output exists, is a single file, contains one `[data-flowchat-root]` mount, opens directly in a browser with no console errors, and its visible topology matches the input graph (no dropped edges, no invented nodes).
+## 主题
+
+可选 JSON，覆盖 [references/theme.md](references/theme.md) 里的任意令牌，未提供的用内置默认值。只覆盖令牌，不要用全局选择器改写宿主页面。
