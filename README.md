@@ -47,7 +47,7 @@ python3 harness/flowchat_local_harness.py out/flowchat.html --output out/harness
 git clone https://github.com/vinterye/flowchat-skill.git ~/.codex/skills/flowchat
 ```
 
-**代码快照**：本 README 描述的代码对应 commit [`__PINNED_SHA__`](https://github.com/vinterye/flowchat-skill/commit/__PINNED_SHA__)。
+**代码快照**：本 README 描述的代码对应 commit [`c46b22b`](https://github.com/vinterye/flowchat-skill/commit/c46b22b3a85e0428b2f9846b4dcb938ec46c523b)。
 该 SHA 冻结的是代码与数据；文档自身的后续润色不在其中。
 
 ## 类型系统

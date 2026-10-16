@@ -15,6 +15,8 @@ description: "Flowchat · 流程图生成器：从 graph JSON 生成单文件、
 
 **不要**用它产出图片、Mermaid 片段或嵌入式组件——这里的交付物是独立的 HTML 文件。
 
+代码快照：`c46b22b`（https://github.com/vinterye/flowchat-skill/commit/c46b22b3a85e0428b2f9846b4dcb938ec46c523b）。枚举一律以该快照里的 `data/type-registry-v1.json` 为准。
+
 ## 铁律（按此顺序执行）
 
 1. **先校验，再生成。** `validate_graph.py` 是硬前置，不是可选项。边的端点指向不存在的节点时，渲染器会**静默丢边**——你会拿到一个看着正常但内容缺失的页面。
