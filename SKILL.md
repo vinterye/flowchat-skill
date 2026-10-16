@@ -1,11 +1,11 @@
 ---
 name: flowchat
-description: "Generate a standalone, self-contained Flowchat HTML page from graph JSON and theme tokens. Use when the user asks for a flow diagram, process map, pipeline visualization, or an interactive flow page, or provides nodes/edges JSON to render."
+description: "Flowchat · 流程图生成器：从 graph JSON 生成单文件、自包含、可直接用浏览器打开的流程图 HTML 页面。Use when the user asks for a 流程图 / 流程可视化 / 流程页面 / flow diagram / process map / pipeline visualization, or provides nodes/edges JSON to render."
 ---
 
-# Flowchat renderer
+# Flowchat · 流程图渲染器
 
-Turn graph JSON into **one self-contained HTML file** that opens directly in a browser. No iframe, no srcdoc, no external assets, no network requests, no build step.
+把 graph JSON 变成**单个自包含 HTML 文件**，浏览器直接打开即可。无 iframe、无 srcdoc、无外部资源、无网络请求、无构建步骤。
 
 ## When to use
 

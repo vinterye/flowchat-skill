@@ -2,7 +2,7 @@
 <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f8faff"/><stop offset="100%" stop-color="#eff1fa"/></linearGradient></defs>
 <rect x="0" y="0" width="1240" height="1160" rx="0" fill="url(#bg)" opacity="1.0"/>
 <text x="40" y="62" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="30" font-weight="700" fill="#172033" text-anchor="start">Flowchat</text>
-<text x="172" y="62" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="19" font-weight="400" fill="#485266" text-anchor="start">功能地图与设计取舍</text>
+<text x="172" y="62" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="19" font-weight="400" fill="#485266" text-anchor="start">流程图生成器 · 功能地图与设计取舍</text>
 <text x="40" y="92" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="400" fill="#485266" text-anchor="start">一份 graph JSON → 一个自包含 HTML；配色、几何、状态语义全部由枚举收敛，而不是留给使用者临场发挥</text>
 <rect x="40" y="128" width="568" height="268" rx="14" fill="#ffffff" stroke="#dfe4ee" stroke-width="1" opacity="1.0"/>
 <rect x="40" y="128" width="568" height="4" rx="2" fill="#4a68e8" opacity="1.0"/>

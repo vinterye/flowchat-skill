@@ -221,7 +221,7 @@ def build() -> str:
 
     # header
     out.append(text(PAD, 62, "Flowchat", size=30, weight="700"))
-    out.append(text(PAD + 132, 62, "功能地图与设计取舍", size=19, fill=MUTED))
+    out.append(text(PAD + 132, 62, "流程图生成器 · 功能地图与设计取舍", size=19, fill=MUTED))
     out.append(
         text(
             PAD,
